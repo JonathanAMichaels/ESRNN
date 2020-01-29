@@ -1,4 +1,4 @@
-function [z, targetFeedforward] = geneticRNN_COTargetFun(t, r, targetFunPassthrough, targetFeedforward)
+function [z, targetFeedforward] = ESRNN_COTargetFun(t, r, targetFunPassthrough, targetFeedforward)
 
 L = targetFunPassthrough.L;
 dt = targetFunPassthrough.dt;

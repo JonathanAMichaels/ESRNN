@@ -19,7 +19,7 @@ if evalOptions(1) >= 2
     figure(99)
     set(gcf, 'Name', 'Output', 'NumberTitle', 'off')
     clf
-    subplot(3,1,1)
+    subplot(4,1,1)
     hold on
     c = lines(length(plotStats.bigZ1));
     for condCount = 1:length(plotStats.bigZ1)
@@ -36,12 +36,17 @@ if evalOptions(1) >= 2
     end
     axis([-1.8 1.8 -1.8 1.8])
     axis square
-    subplot(3,1,2)
+    subplot(4,1,2)
     hold on
     for condCount = 1:length(plotStats.bigZ1)
         plot(plotStats.bigZ1{condCount}', 'Color', c(condCount,:));
     end
-    subplot(3,1,3)
+    subplot(4,1,3)
+    hold on
+    for condCount = 1:length(plotStats.bigZ0)
+        plot(plotStats.bigZ0{condCount}', 'Color', c(condCount,:));
+    end
+    subplot(4,1,4)
     hold on
     for condCount = 1:length(plotStats.bigZ1)
         plot(plotStats.bigR{condCount}(1,:)', 'Color', c(condCount,:));

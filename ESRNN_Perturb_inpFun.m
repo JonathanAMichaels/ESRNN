@@ -32,7 +32,7 @@ for cond = 1:numConds
     
     targetFunPassthrough(cond).perturbTrials = randi(2)-1;
     targetFunPassthrough(cond).perturbDir = rand * pi * 2;
-    targetFunPassthrough(cond).perturbMag = rand * 0.3;
+    targetFunPassthrough(cond).perturbMag = 0;%rand * 0.3;
     targetFunPassthrough(cond).perturbDist = (rand * 0.2) + 0.1;
     targetFunPassthrough(cond).kinStart = preTime;
     targetFunPassthrough(cond).goTime = preTime+fixTime;

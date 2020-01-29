@@ -1,6 +1,5 @@
 function [Z0, Z1, R, X, varargout] = ESRNN_run_model(net, inp, varargin)
 
-[Z0, Z1, R, X, varargout] = geneticRNN_run_model(net, inp, varargin)
 %
 % This function runs the network structure (net)
 %
@@ -80,11 +79,6 @@ for cond = 1:length(condList)
         thisPass = [];
     end
     
-    allZ0 = zeros(niters,B);
-    allZ1 = zeros(niters,B);
-    allR = zeros(niters,N);
-    allX = zeros(niters,N);
-    
     x = x0;
     
     %% Activation function
@@ -95,6 +89,11 @@ for cond = 1:length(condList)
     %% Calculate output using supplied function
     [z, targetFeedforward] = targetFun(0, out, thisPass, targetFeedforward);
 
+    allZ0 = zeros(niters,length(out));
+    allZ1 = zeros(niters,length(z));
+    allR = zeros(niters,N);
+    allX = zeros(niters,N);
+    
     for i = 1:niters
         if isfield(targetFeedforward, 'inpOff')
             if ~isempty(targetFeedforward.inpOff)

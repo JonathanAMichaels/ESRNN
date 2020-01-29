@@ -244,14 +244,14 @@ while UIButton.Value == 0 && g < maxIters && mean(fitness) ~= 0
     
     % Sort fitness
     mF = fitness;
-    [mF, sortInd] = sort(mF, 'descend');
+    [~, sortInd] = sort(mF, 'descend');
     rank = 1:populationSize;
     rank(sortInd) = rank;
     utility = u(rank);
     
-   % mF = mF - mean(mF);
-   % mF = mF / std(mF);
-  %  utility = mF(rank);
+    mF = mF - mean(mF);
+    mF = mF / std(mF);
+    utility = mF;
     
     theta = zeros(size(net.theta,1),populationSize);
     modMask = net.modMask;
@@ -294,22 +294,25 @@ while UIButton.Value == 0 && g < maxIters && mean(fitness) ~= 0
     %% Holy update
     net.theta = net.theta - newGrad; 
     
-    d = 0.001 / sqrt(net.N) * decayRate;
-    net.theta(net.theta < -d) = net.theta(net.theta < -d) + d;
-    net.theta(net.theta > d) = net.theta(net.theta > d) - d;
+    %d = 0.001 / sqrt(net.N) * decayRate;
+    %net.theta(net.theta < -d) = net.theta(net.theta < -d) + d;
+    %net.theta(net.theta > d) = net.theta(net.theta > d) - d;
     
     %% "Cleverly" determine the decay rate
     [~,J,~,~,~,~,~] = ESRNN_unpack(net, net.theta);
     e = abs(eig(J));
     e = e(1);
     decay1 = (1 - 1/e) * 0.2;
+    if decay1 < 0
+        decay1 = 0;
+    end
     
     %% Holy decay
     net.theta = net.theta - decay1 * (net.theta .* modMask);
     
     %% Decay learning rates
     learningRate = learningRate * 0.99;
-    optimizerParams(1) = optimizerParams(1) * 1;%0.99;
+    %optimizerParams(1) = optimizerParams(1) * 0.99;
     decayRate = decayRate * 0.99;
     
     %% Recalculate best network for plotting or output
@@ -332,6 +335,7 @@ while UIButton.Value == 0 && g < maxIters && mean(fitness) ~= 0
     plotStats.fitness = fitness';
     plotStats.mutationPower = mutationPower;
     plotStats.generation = g;
+    plotStats.bigZ0 = Z0;
     plotStats.bigZ1 = Z1;
     plotStats.bigR = R;
     plotStats.targ = fitnessFunInputs;

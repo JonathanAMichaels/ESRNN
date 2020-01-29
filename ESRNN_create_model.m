@@ -1,4 +1,4 @@
-function net = geneticRNN_create_model(policyInitInputs, varargin)
+function net = ESRNN_create_model(policyInitInputs, varargin)
 
 % net = geneticRNN_create_model(policyInitInputs, varargin)
 %
@@ -100,25 +100,25 @@ net.dt = dt;
 net.tau = tau;
 
 %% Initialize input weights
-wIn = randn(N,I) / sqrt(N);
+wIn = randn(N,I) / sqrt(I);
 
 %% Initialize feedback weights
 wFb = zeros(N,F);
 if F > 0
-    wFb = randn(N,F) / sqrt(N);
+    wFb = randn(N,F) / sqrt(F);
 end
 
 %% Initialize output weights
-wOut = randn(B,N) / sqrt(N);
+wOut = randn(B,N) / sqrt(B);
 
 %% Initialize J biases
-bJ = randn(N,1) * 1e-4;
+bJ = (rand(N,1)-0.5)*2;
 
 %% Initialize output biases
-bOut = randn(B,1) * 1e-4;
+bOut = zeros(B,1) + 0.3;
 
 %% Initialize starting activation
-x0 = randn(N,1) * 1e-4;
+x0 = (rand(N,1) - 0.5)*2;
 
 %% Pack it up
 net.theta = ESRNN_pack(wIn, J, wOut, x0, bJ, bOut, wFb);

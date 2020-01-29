@@ -36,7 +36,9 @@ else
     pos1 = targetFeedforward.pos(end,:);
 end
 
-FOut = tanh(r(1:2,:)') + randn(size(r(1:2,:)'))*0.01;
+actFun = @(x) (x > 0) .* tanh(x);
+FOut = actFun(r + randn(size(r))*0.05);
+FOut = [-FOut(1) FOut(2) -FOut(3) FOut(4)]';
 
 if t >= kinStart && ~targetFeedforward.lock
     %% Calculate forces
@@ -55,20 +57,20 @@ if t >= kinStart && ~targetFeedforward.lock
     end
     if (perturbTrials == 1) && (dToStart > 0.1) && ...
             (dToEnd < dTrigger) && isempty(targetFeedforward.perturbDir) && t >= goTime
-        targetFeedforward.pON = true;
-        targetFeedforward.perturbDir = perturbDir;
-        targetFeedforward.perturbMag = perturbMag;
-        targetFeedforward.perturbDist = perturbDist;
-        targetFeedforward.perturbOnTime = t;
+        %targetFeedforward.pON = true;
+        %targetFeedforward.perturbDir = perturbDir;
+        %targetFeedforward.perturbMag = perturbMag;
+        %targetFeedforward.perturbDist = perturbDist;
+        %targetFeedforward.perturbOnTime = t;
     end
     F = [0 0];
     if targetFeedforward.pON
-        F = [sin(targetFeedforward.perturbDir), cos(targetFeedforward.perturbDir)] * perturbMag;
+       % F = [sin(targetFeedforward.perturbDir), cos(targetFeedforward.perturbDir)] * perturbMag;
     end
   
     if ~targetFeedforward.lock
         %% Update current velocity
-        outputDelay = 3;
+        outputDelay = 1;
         if size(targetFeedforward.FOut,1) < outputDelay
             oInd = size(targetFeedforward.FOut,1);
         else
@@ -79,7 +81,8 @@ if t >= kinStart && ~targetFeedforward.lock
         else
             thisFOut = targetFeedforward.FOut(end-(oInd-1),:);
         end
-        vel = vel1 + (thisFOut + F) * (dt/1000);
+        tempF = [sum(thisFOut(1:2)) sum(thisFOut(3:4))];
+        vel = vel1 + (tempF + F) * (dt/1000);
         pos = pos1 + vel;
     else
         pos = pos1;
@@ -97,15 +100,15 @@ targetFeedforward.F(end+1,:) = F;
 targetFeedforward.FOut(end+1,:) = FOut;
 targetFeedforward.t(end+1) = t;
 targetFeedforward.pos(end+1,:) = pos;
-feedbackDelay = 3;
+feedbackDelay = 1;
 if size(targetFeedforward.pos,1) < feedbackDelay+1
     FInd = size(targetFeedforward.pos,1) - 1;
 else
     FInd = feedbackDelay;
 end
 targetFeedforward.Feedback = [targetFeedforward.pos(end-FInd,:)'; ...
-    targetFeedforward.FOut(end-FInd,:)' + targetFeedforward.F(end-FInd,:)'];
-targetFeedforward.Feedback = targetFeedforward.Feedback + randn(size(targetFeedforward.Feedback))*0.01;
+    targetFeedforward.vel(end-FInd,:)'];
+targetFeedforward.Feedback = targetFeedforward.Feedback;% + randn(size(targetFeedforward.Feedback))*0.01;
 targetFeedforward.FeedbackHistory(end+1,:) = targetFeedforward.Feedback;
-z = [pos'];
+z = pos';
 end
