@@ -38,18 +38,28 @@ if evalOptions(1) >= 2
     axis square
     subplot(4,1,2)
     hold on
-    for condCount = 1:length(plotStats.bigZ1)
-        plot(plotStats.bigZ1{condCount}', 'Color', c(condCount,:));
+    for condCount = 1%:length(plotStats.bigZ1)
+        for type = 1:2
+            plot(plotStats.bigZ1{condCount}(type,:)', 'Color', c(type,:));
+            plot(plotStats.targ{condCount}(type,:)', 'Color', c(type,:));
+        end
     end
     subplot(4,1,3)
     hold on
-    for condCount = 1:length(plotStats.bigZ0)
-        plot(plotStats.bigZ0{condCount}', 'Color', c(condCount,:));
+    for condCount = 1%:length(plotStats.bigZ0)
+        for type = 1:4
+            if type <= 2
+                cc = c(1,:);
+            else
+                cc = c(2,:);
+            end
+            plot(plotStats.bigZ0{condCount}(type,:)', 'Color', cc);
+        end
     end
     subplot(4,1,4)
     hold on
-    for condCount = 1:length(plotStats.bigZ1)
-        plot(plotStats.bigR{condCount}(1,:)', 'Color', c(condCount,:));
+    for condCount = 1%:length(plotStats.bigZ1)
+        plot(plotStats.bigR{condCount}(1:10,:)')
     end
 end
 drawnow

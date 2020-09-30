@@ -249,9 +249,9 @@ while UIButton.Value == 0 && g < maxIters && mean(fitness) ~= 0
     rank(sortInd) = rank;
     utility = u(rank);
     
-    mF = mF - mean(mF);
-    mF = mF / std(mF);
-    utility = mF;
+  %  mF = mF - mean(mF);
+  %  mF = mF / std(mF);
+  %  utility = mF;
     
     theta = zeros(size(net.theta,1),populationSize);
     modMask = net.modMask;

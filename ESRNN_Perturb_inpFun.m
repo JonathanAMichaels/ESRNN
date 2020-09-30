@@ -1,43 +1,38 @@
 function [inp, fitnessFunInputs, targetFunPassthrough] = ESRNN_Perturb_inpFun
 
-numConds = 50;
-
+numConds = 10;
+moveTimePer = 30;
+reps = 5;
 %% General inputs and output
 inp = cell(1,numConds);
 targ = cell(1,numConds);
 targetFunPassthrough = [];
 for cond = 1:numConds
-    fixTime = randi(40)+40;
-    preTime = 30;
-    moveTime = 80;
-    totalTime = preTime + fixTime + moveTime;
+    targetPoints = (rand(2,reps+1)-0.5)*2;
     
-    startPoint = (rand(2,1)-0.5)*2;
-    endPoint = (rand(2,1)-0.5)*2;
-    
-    d = sqrt(sum((endPoint - startPoint).^2));
-    while d < 0.2
-        startPoint = (rand(2,1)-0.5)*2;
-        endPoint = (rand(2,1)-0.5)*2;
-        d = sqrt(sum((endPoint - startPoint).^2));
+    for i = 2:reps
+        d = sqrt(sum((targetPoints(:,i) - targetPoints(:,i-1)).^2));
+        while d < 0.2
+            targetPoints(:,i) = (rand(2,1)-0.5)*2;
+            d = sqrt(sum((targetPoints(:,i) - targetPoints(:,i-1)).^2));
+        end
     end
+    inp{cond} = zeros(2, moveTimePer*reps);
+    for i = 1:reps
+        inp{cond}(1:2,(i-1)*moveTimePer+1 : i*moveTimePer) = repmat(targetPoints(:,i+1), [1 moveTimePer]);
+    end
+    targ{cond} = inp{cond};
+    targ{cond}(:,1) = targetPoints(:,1);
     
-    inp{cond} = zeros(5, totalTime);
-    inp{cond}(1:2,:) = repmat(endPoint, [1 totalTime]);
-    inp{cond}(3:4,:) = [repmat(startPoint, [1 preTime+fixTime]) zeros(2, moveTime)];
-    inp{cond}(5,:) = [ones(1,preTime+fixTime)*2, zeros(1,moveTime)];
-    
-    targ{cond} = [repmat(startPoint, [1 preTime+fixTime]), repmat(endPoint, [1 moveTime])];
-    targ{cond}(:,[1:preTime+fixTime-1 preTime+fixTime+1:end-1]) = nan;
-    
-    targetFunPassthrough(cond).perturbTrials = randi(2)-1;
+    targetFunPassthrough(cond).perturbTrials = 0;%randi(2)-1;
     targetFunPassthrough(cond).perturbDir = rand * pi * 2;
     targetFunPassthrough(cond).perturbMag = 0;%rand * 0.3;
     targetFunPassthrough(cond).perturbDist = (rand * 0.2) + 0.1;
-    targetFunPassthrough(cond).kinStart = preTime;
-    targetFunPassthrough(cond).goTime = preTime+fixTime;
-    targetFunPassthrough(cond).pos = startPoint;
-    targetFunPassthrough(cond).end = endPoint;
+    targetFunPassthrough(cond).kinStart = 1;
+    targetFunPassthrough(cond).goTime = 1;
+    targetFunPassthrough(cond).pos = targetPoints(:,1);
+    targetFunPassthrough(cond).end = targetPoints(:,end);
+    
 end
 fitnessFunInputs = targ;
 end

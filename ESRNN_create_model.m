@@ -109,13 +109,13 @@ if F > 0
 end
 
 %% Initialize output weights
-wOut = randn(B,N) / sqrt(B);
+wOut = randn(B,N) / sqrt(B) * 1e-50;
 
 %% Initialize J biases
 bJ = (rand(N,1)-0.5)*2;
 
 %% Initialize output biases
-bOut = zeros(B,1) + 0.3;
+bOut = zeros(B,1) + 0.1;
 
 %% Initialize starting activation
 x0 = (rand(N,1) - 0.5)*2;

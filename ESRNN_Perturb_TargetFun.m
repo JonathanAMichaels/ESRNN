@@ -37,7 +37,8 @@ else
 end
 
 actFun = @(x) (x > 0) .* tanh(x);
-FOut = actFun(r + randn(size(r))*0.05);
+ReLu = @(x) (x > 0) .* x;
+FOut = actFun(r + randn(size(r))*0.0);
 FOut = [-FOut(1) FOut(2) -FOut(3) FOut(4)]';
 
 if t >= kinStart && ~targetFeedforward.lock
@@ -82,7 +83,7 @@ if t >= kinStart && ~targetFeedforward.lock
             thisFOut = targetFeedforward.FOut(end-(oInd-1),:);
         end
         tempF = [sum(thisFOut(1:2)) sum(thisFOut(3:4))];
-        vel = vel1 + (tempF + F) * (dt/1000);
+        vel = vel1 + (tempF + F) * (dt/1000) * 10;
         pos = pos1 + vel;
     else
         pos = pos1;

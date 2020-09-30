@@ -1,7 +1,7 @@
 function [inp, fitnessFunInputs, targetFunPassthrough] = ESRNN_Perturb_inpFun_CO
 
 numConds = 8;
-moveTime = 80;
+moveTime = 40;
 ang = linspace(0, 2*pi - (2*pi/numConds), numConds);
 
 %% General inputs and output

@@ -4,8 +4,8 @@ close all
 local = true;
 evalOpts = [2 1]; % Plotting level and frequency of evaluation
 try
-    if ispc
-        baseDir = 'E:\jmichaels\Projects\P';
+    if strcmp(computer, 'GLNXA64')
+        baseDir = '/media/jonathan/Data/jmichaels/Projects/P';
     else
        % baseDir = '/Users/jonathanamichaels/Desktop/P';
          baseDir = '/Users/jonathanamichaels/Desktop/jmichaels/Projects/P';
@@ -26,7 +26,7 @@ end
 
 
 %% Initialize network parameters
-N = 200; % Number of neurons
+N = 50; % Number of neurons
 B = 4; % Outputs
 I = 2; % Inputs
 F = 4; % Feedback
@@ -46,10 +46,10 @@ plotFun = @ESRNN_Perturb_PlotFun;
 policyInitFun = @ESRNN_create_model;
 fitnessFun = @ESRNN_Perturb_FitnessFun;
 mutationPower = 1e-2; % Standard deviation of normally distributed noise to add in each generation
-populationSize = 3000; % Number of individuals in each generation
+populationSize = 10000; % Number of individuals in each generation
 batchSize = 1;
 learningRate = 0;%1e-1;
-optimizerParams = [0.01, 0.9, 0.999, 1e-16];
+optimizerParams = [0.01, 0.9, 0.999, 1e-8];
 %optimizerParams = [0.01, 0.9, 0.999];
 fitnessFunInputs = [];
 
